@@ -4,17 +4,17 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { name, billboardId } = body;
+    const { name, collectionId } = body;
 
     if (!userId) return new NextResponse("Unauthenticated", { status: 401 });
     if (!name) return new NextResponse("Name is required", { status: 400 });
-    if (!billboardId)
-      return new NextResponse("Billboard ID is required", { status: 400 });
+    if (!collectionId)
+      return new NextResponse("Collection ID is required", { status: 400 });
     if (!params.storeId)
       return new NextResponse("Store ID is required", { status: 400 });
 
@@ -30,7 +30,7 @@ export async function POST(
     const category = await prismadb.category.create({
       data: {
         name,
-        billboardId,
+        collectionId,
         storeId: params.storeId,
       },
     });
@@ -43,7 +43,7 @@ export async function POST(
 
 export async function GET(
   _req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   try {
     if (!params.storeId)
@@ -55,7 +55,7 @@ export async function GET(
     });
     return NextResponse.json(categories);
   } catch (error) {
-    // console.log('BILLIBORDS_POST', error);
+    // console.log('COLLECTIONS_POST', error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

@@ -4,20 +4,20 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { storeId: string; categoryId: string } }
+  { params }: { params: { storeId: string; categoryId: string } },
 ) {
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { name, billboardId } = body;
+    const { name, collectionId } = body;
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
     }
-    if (!billboardId) {
-      return new NextResponse("Billboard ID is required", { status: 400 });
+    if (!collectionId) {
+      return new NextResponse("Collection ID is required", { status: 400 });
     }
     if (!params.categoryId) {
       return new NextResponse("category ID is required", { status: 400 });
@@ -41,18 +41,18 @@ export async function PATCH(
       },
       data: {
         name,
-        billboardId,
+        collectionId,
       },
     });
     return NextResponse.json(category);
   } catch (error) {
-    console.log("BILLBOARD_PATCH :", error);
+    console.log("COLLECTION_PATCH :", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 export async function DELETE(
   _req: Request,
-  { params }: { params: { storeId: string; categoryId: string } }
+  { params }: { params: { storeId: string; categoryId: string } },
 ) {
   try {
     const { userId } = auth();
@@ -90,7 +90,7 @@ export async function DELETE(
 }
 export async function GET(
   _req: Request,
-  { params }: { params: { categoryId: string } }
+  { params }: { params: { categoryId: string } },
 ) {
   try {
     if (!params.categoryId) {
@@ -102,7 +102,7 @@ export async function GET(
         id: params.categoryId,
       },
       include: {
-        billboard: true,
+        collection: true,
       },
     });
     return NextResponse.json(category);
