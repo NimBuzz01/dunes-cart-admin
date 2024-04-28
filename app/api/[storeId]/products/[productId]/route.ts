@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { storeId: string; productId: string } }
+  { params }: { params: { storeId: string; productId: string } },
 ) {
   try {
     const { userId } = auth();
@@ -71,7 +71,7 @@ export async function PATCH(
 }
 export async function DELETE(
   _req: Request,
-  { params }: { params: { storeId: string; productId: string } }
+  { params }: { params: { storeId: string; productId: string } },
 ) {
   try {
     const { userId } = auth();
@@ -84,7 +84,7 @@ export async function DELETE(
       return new NextResponse("Store ID is required", { status: 400 });
     }
     if (!params.productId) {
-      return new NextResponse("Billboard ID is required", { status: 400 });
+      return new NextResponse("Collection ID is required", { status: 400 });
     }
     const storeByUserId = await prismadb.store.findFirst({
       where: {
@@ -107,7 +107,7 @@ export async function DELETE(
 }
 export async function GET(
   _req: Request,
-  { params }: { params: { productId: string } }
+  { params }: { params: { productId: string } },
 ) {
   try {
     if (!params.productId) {

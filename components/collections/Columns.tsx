@@ -16,13 +16,13 @@ import { useState } from "react";
 import axios from "axios";
 import AlertModal from "../modals/alertModal";
 
-export type BillboardColumn = {
+export type CollectionColumn = {
   id: string;
   label: string;
   createdAt: string;
 };
 
-export const Columns: ColumnDef<BillboardColumn>[] = [
+export const Columns: ColumnDef<CollectionColumn>[] = [
   {
     accessorKey: "label",
     header: "Label",
@@ -38,7 +38,7 @@ export const Columns: ColumnDef<BillboardColumn>[] = [
 ];
 
 interface ICellAction {
-  data: BillboardColumn;
+  data: CollectionColumn;
 }
 
 export const CellAction = ({ data }: ICellAction) => {
@@ -48,17 +48,17 @@ export const CellAction = ({ data }: ICellAction) => {
   const params = useParams();
   const onCopy = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Billboard ID copied.");
+    toast.success("Collection ID copied.");
   };
 
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await axios.delete(`/api/${params.storeId}/billboards/${data.id}`);
+      await axios.delete(`/api/${params.storeId}/collections/${data.id}`);
       router.refresh();
-      toast.success("billboard deleted!");
+      toast.success("collection deleted!");
     } catch (error) {
-      toast.error("You can't delete billboard with categories and products");
+      toast.error("You can't delete collection with categories and products");
     } finally {
       setIsLoading(false);
       setIsOpen(false);
@@ -83,7 +83,7 @@ export const CellAction = ({ data }: ICellAction) => {
           <DropdownMenuLabel>actions</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() =>
-              router.push(`/${params.storeId}/billboards/${data.id}`)
+              router.push(`/${params.storeId}/collections/${data.id}`)
             }
             className="cursor-pointer"
           >

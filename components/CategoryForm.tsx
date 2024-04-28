@@ -22,8 +22,7 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import AlertModal from "./modals/alertModal";
-import ImageUpload from "./ui/ImageUpload";
-import { Billboard, Category } from "@prisma/client";
+import { Category, Collection } from "@prisma/client";
 import {
   Select,
   SelectContent,
@@ -34,19 +33,19 @@ import {
 
 interface CategoryFormProps {
   initialData: Category | null;
-  billboards: Billboard[];
+  collections: Collection[];
 }
 const formSchema = z.object({
-  billboardId: z.string().min(1),
+  collectionId: z.string().min(1),
   name: z.string().min(3),
 });
 type CategoryFormValues = z.infer<typeof formSchema>;
 
-const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
+const CategoryForm = ({ initialData, collections }: CategoryFormProps) => {
   const title = initialData ? "Edit Category" : "Create Category";
   const description = initialData
     ? "Edit a Category"
-    : "Create a new Category for your billboard";
+    : "Create a new Category for your collection";
   const action = initialData ? "save changes" : "Create";
   const toastMessage = initialData ? "Changes saved" : "Category Created";
 
@@ -58,7 +57,7 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       name: "",
-      billboardId: "",
+      collectionId: "",
     },
   });
 
@@ -68,7 +67,7 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
       if (initialData) {
         await axios.patch(
           `/api/${params?.storeId}/categories/${params?.categoryId}`,
-          data
+          data,
         );
       } else {
         await axios.post(`/api/${params.storeId}/categories`, data);
@@ -86,7 +85,7 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
     try {
       setIsLoading(true);
       await axios.delete(
-        `/api/${params.storeId}/categories/${params.categoryId}`
+        `/api/${params.storeId}/categories/${params.categoryId}`,
       );
       router.refresh();
       router.push(`/${params.storeId}/categories`);
@@ -122,10 +121,10 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
       <Separator />
       <Form {...form}>
         <form
-          className="space-y-8 w-full"
+          className="w-full space-y-8"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className="grid sm:grid-cols-2 gap-8">
+          <div className="grid gap-8 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="name"
@@ -148,12 +147,12 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
             />
             <FormField
               control={form.control}
-              name="billboardId"
+              name="collectionId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Bollboard ID</FormLabel>
                   <FormDescription>
-                    A category belongs to billboards
+                    A category belongs to collections
                   </FormDescription>
                   <Select
                     disabled={isLoading}
@@ -165,14 +164,14 @@ const CategoryForm = ({ initialData, billboards }: CategoryFormProps) => {
                       <SelectTrigger>
                         <SelectValue
                           defaultValue={field.value}
-                          placeholder="Select a billboard"
+                          placeholder="Select a collection"
                         />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {billboards.map((billboard) => (
-                        <SelectItem value={billboard.id} key={billboard.id}>
-                          {billboard.label}
+                      {collections.map((collection) => (
+                        <SelectItem value={collection.id} key={collection.id}>
+                          {collection.label}
                         </SelectItem>
                       ))}
                     </SelectContent>

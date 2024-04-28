@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { z } from "zod";
-import { Billboard, Store } from "@prisma/client";
+import { Collection } from "@prisma/client";
 import Heading from "@/components/ui/Heading";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
@@ -24,28 +24,28 @@ import { useParams, useRouter } from "next/navigation";
 import AlertModal from "./modals/alertModal";
 import ImageUpload from "./ui/ImageUpload";
 
-interface BillboardFormProps {
-  initialData: Billboard | null;
+interface CollectionFormProps {
+  initialData: Collection | null;
 }
 const formSchema = z.object({
   imageUrl: z.string().min(1),
   label: z.string().min(3),
 });
-type BillboardFormValues = z.infer<typeof formSchema>;
+type CollectionFormValues = z.infer<typeof formSchema>;
 
-const BillboardForm = ({ initialData }: BillboardFormProps) => {
-  const title = initialData ? "Edit billboard" : "Create billboard";
+const CollectionForm = ({ initialData }: CollectionFormProps) => {
+  const title = initialData ? "Edit collection" : "Create collection";
   const description = initialData
-    ? "Edit a billboard"
-    : "Create a new billboard";
+    ? "Edit a collection"
+    : "Create a new collection";
   const action = initialData ? "save changes" : "Create";
-  const toastMessage = initialData ? "Changes saved" : "Billboard Created";
+  const toastMessage = initialData ? "Changes saved" : "Collection Created";
 
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const params = useParams();
   const router = useRouter();
-  const form = useForm<BillboardFormValues>({
+  const form = useForm<CollectionFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       label: "",
@@ -53,19 +53,19 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
     },
   });
 
-  const onSubmit = async (data: BillboardFormValues) => {
+  const onSubmit = async (data: CollectionFormValues) => {
     try {
       setIsLoading(true);
       if (initialData) {
         await axios.patch(
-          `/api/${params?.storeId}/billboards/${params?.billboardId}`,
-          data
+          `/api/${params?.storeId}/collections/${params?.collectionId}`,
+          data,
         );
       } else {
-        await axios.post(`/api/${params.storeId}/billboards`, data);
+        await axios.post(`/api/${params.storeId}/collections`, data);
       }
       router.refresh();
-      router.push(`/${params.storeId}/billboards`);
+      router.push(`/${params.storeId}/collections`);
       toast.success(toastMessage);
     } catch (error) {
       toast.error("Failed to to save settings");
@@ -77,13 +77,13 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
     try {
       setIsLoading(true);
       await axios.delete(
-        `/api/${params.storeId}/billboards/${params.billboardId}`
+        `/api/${params.storeId}/collections/${params.collectionId}`,
       );
       router.refresh();
-      router.push(`/${params.storeId}/billboards`);
-      toast.success("billboard deleted!");
+      router.push(`/${params.storeId}/collections`);
+      toast.success("collection deleted!");
     } catch (error) {
-      toast.error("You can't delete billboard with categories and products");
+      toast.error("You can't delete collection with categories and products");
     } finally {
       setIsLoading(false);
       setIsOpen(false);
@@ -113,7 +113,7 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
       <Separator />
       <Form {...form}>
         <form
-          className="space-y-8 w-full"
+          className="w-full space-y-8"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
@@ -134,7 +134,7 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
               </FormItem>
             )}
           />
-          <div className="grid sm:grid-cols-3 gap-8">
+          <div className="grid gap-8 sm:grid-cols-3">
             <FormField
               control={form.control}
               name="label"
@@ -144,7 +144,7 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
                   <FormControl>
                     <Input
                       disabled={isLoading}
-                      placeholder="Billboard label"
+                      placeholder="Collection label"
                       {...field}
                     />
                   </FormControl>
@@ -162,4 +162,4 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
   );
 };
 
-export default BillboardForm;
+export default CollectionForm;

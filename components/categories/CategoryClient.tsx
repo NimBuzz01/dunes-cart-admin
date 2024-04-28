@@ -22,12 +22,12 @@ const CategoryClient = ({ data }: CategoryProps) => {
       <div className="flex flex-row items-center justify-between">
         <Heading
           title={`Categories (${data?.length})`}
-          description="Manage categories for your billboards"
+          description="Manage categories for your products"
         />
         <Button
           onClick={() => router.push(`/${params?.storeId}/categories/new`)}
         >
-          <Plus className="mr-4 w-4 h-4" />
+          <Plus className="mr-4 h-4 w-4" />
           <span>create</span>
         </Button>
       </div>

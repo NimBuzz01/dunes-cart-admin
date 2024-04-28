@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   try {
     const { userId } = auth();
@@ -27,35 +27,35 @@ export async function POST(
     if (!storeByUserId)
       return new NextResponse("Unauthorized", { status: 403 });
 
-    const billboard = await prismadb.billboard.create({
+    const collection = await prismadb.collection.create({
       data: {
         label,
         imageUrl,
         storeId: params.storeId,
       },
     });
-    return NextResponse.json(billboard);
+    return NextResponse.json(collection);
   } catch (error) {
-    //console.log('BILLIBORDS_POST', error);
+    //console.log('COLLECTION_POST', error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
 export async function GET(
   req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   try {
     if (!params.storeId)
       return new NextResponse("Store ID is required", { status: 400 });
-    const billboards = await prismadb.billboard.findMany({
+    const collections = await prismadb.collection.findMany({
       where: {
         storeId: params.storeId,
       },
     });
-    return NextResponse.json(billboards);
+    return NextResponse.json(collections);
   } catch (error) {
-    console.log("BILLIBORDS_POST", error);
+    console.log("COLLECTION_POST", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

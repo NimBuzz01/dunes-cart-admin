@@ -13,15 +13,15 @@ const CategoryPage = async ({
       id: params.categoryId,
     },
   });
-  const billboards = await prismadb.billboard.findMany({
+  const collections = await prismadb.collection.findMany({
     where: {
       storeId: params.storeId,
     },
   });
   return (
     <div className="flex-col">
-      <div className="space-y-4 flex-1 p-8">
-        <CategoryForm billboards={billboards} initialData={category} />
+      <div className="flex-1 space-y-4 p-8">
+        <CategoryForm collections={collections} initialData={category} />
       </div>
     </div>
   );
