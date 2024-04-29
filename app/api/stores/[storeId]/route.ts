@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   try {
     const { userId } = auth();
@@ -14,7 +14,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
     if (!name) {
-      return new NextResponse("name is required", { status: 400 });
+      return new NextResponse("Name is required", { status: 400 });
     }
     if (!params.storeId) {
       return new NextResponse("Storeid is required", { status: 400 });
@@ -36,7 +36,7 @@ export async function PATCH(
 }
 export async function DELETE(
   _req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   try {
     const { userId } = auth();

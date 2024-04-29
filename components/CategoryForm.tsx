@@ -22,30 +22,19 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import AlertModal from "./modals/alertModal";
-import { Category, Collection } from "@prisma/client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
+import { Category } from "@prisma/client";
 
 interface CategoryFormProps {
   initialData: Category | null;
-  collections: Collection[];
 }
 const formSchema = z.object({
-  collectionId: z.string().min(1),
   name: z.string().min(3),
 });
 type CategoryFormValues = z.infer<typeof formSchema>;
 
-const CategoryForm = ({ initialData, collections }: CategoryFormProps) => {
+const CategoryForm = ({ initialData }: CategoryFormProps) => {
   const title = initialData ? "Edit Category" : "Create Category";
-  const description = initialData
-    ? "Edit a Category"
-    : "Create a new Category for your collection";
+  const description = initialData ? "Edit a Category" : "Create a new Category";
   const action = initialData ? "save changes" : "Create";
   const toastMessage = initialData ? "Changes saved" : "Category Created";
 
@@ -57,7 +46,6 @@ const CategoryForm = ({ initialData, collections }: CategoryFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       name: "",
-      collectionId: "",
     },
   });
 
@@ -141,41 +129,6 @@ const CategoryForm = ({ initialData, collections }: CategoryFormProps) => {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="collectionId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bollboard ID</FormLabel>
-                  <FormDescription>
-                    A category belongs to collections
-                  </FormDescription>
-                  <Select
-                    disabled={isLoading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a collection"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {collections.map((collection) => (
-                        <SelectItem value={collection.id} key={collection.id}>
-                          {collection.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

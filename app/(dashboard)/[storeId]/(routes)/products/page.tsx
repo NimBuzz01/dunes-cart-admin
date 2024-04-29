@@ -10,7 +10,6 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
     },
     include: {
       category: true,
-      size: true,
     },
     orderBy: {
       createdAt: "desc",
@@ -24,12 +23,11 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
     isFeatured: product.isFeatured,
     price: product.price,
     category: product.category.name,
-    size: product.size.name,
     createdAt: format(product.createdAt, "MMMM do, yyyy"),
   }));
   return (
     <div className="flex-col">
-      <div className="flex-1 p-8 pt-6 space-y-4">
+      <div className="flex-1 space-y-4 p-8 pt-6">
         <ProductClient data={formattedProducts} />
       </div>
     </div>

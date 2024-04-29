@@ -9,12 +9,10 @@ export async function POST(
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { name, collectionId } = body;
+    const { name } = body;
 
     if (!userId) return new NextResponse("Unauthenticated", { status: 401 });
     if (!name) return new NextResponse("Name is required", { status: 400 });
-    if (!collectionId)
-      return new NextResponse("Collection ID is required", { status: 400 });
     if (!params.storeId)
       return new NextResponse("Store ID is required", { status: 400 });
 
@@ -30,7 +28,6 @@ export async function POST(
     const category = await prismadb.category.create({
       data: {
         name,
-        collectionId,
         storeId: params.storeId,
       },
     });

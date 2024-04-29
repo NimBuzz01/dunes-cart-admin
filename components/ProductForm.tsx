@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { z } from "zod";
-import { Category, Image, Product, Size } from "@prisma/client";
+import { Category, Image, Product } from "@prisma/client";
 import Heading from "@/components/ui/Heading";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
@@ -32,10 +32,11 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
+import { Textarea } from "./ui/textarea";
+import Multitext from "./Multitext";
 
 interface ProductFormProps {
   categories: Category[];
-  sizes: Size[];
   initialData:
     | (Product & {
         images: Image[];
@@ -45,19 +46,16 @@ interface ProductFormProps {
 const formSchema = z.object({
   name: z.string().min(1),
   price: z.coerce.number(),
+  description: z.string().min(1),
+  details: z.array(z.string()),
   images: z.object({ url: z.string() }).array(),
   categoryId: z.string(),
-  sizeId: z.string(),
   isFeatured: z.boolean().default(false),
   isArchived: z.boolean().default(false),
 });
 type ProductFormValues = z.infer<typeof formSchema>;
 
-const ProductForm = ({
-  initialData,
-  sizes,
-  categories = [],
-}: ProductFormProps) => {
+const ProductForm = ({ initialData, categories = [] }: ProductFormProps) => {
   const title = initialData ? "Edit product" : "Create product";
   const description = initialData ? "Edit a product" : "Create a new product";
   const action = initialData ? "save changes" : "Create";
@@ -72,10 +70,11 @@ const ProductForm = ({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       name: "",
+      description: "",
+      details: [],
       price: 0,
       images: [],
       categoryId: "",
-      sizeId: "",
       isFeatured: false,
       isArchived: false,
     },
@@ -87,7 +86,7 @@ const ProductForm = ({
       if (initialData) {
         await axios.patch(
           `/api/${params?.storeId}/products/${params?.productId}`,
-          data
+          data,
         );
       } else {
         await axios.post(`/api/${params.storeId}/products`, data);
@@ -139,7 +138,7 @@ const ProductForm = ({
       <Separator />
       <Form {...form}>
         <form
-          className="space-y-8 w-full"
+          className="w-full space-y-8"
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
@@ -166,7 +165,7 @@ const ProductForm = ({
               </FormItem>
             )}
           />
-          <div className="grid sm:grid-cols-3 gap-8">
+          <div className="grid gap-8 sm:grid-cols-3">
             <FormField
               control={form.control}
               name="name"
@@ -231,41 +230,9 @@ const ProductForm = ({
             />
             <FormField
               control={form.control}
-              name="sizeId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Sizes</FormLabel>
-                  <Select
-                    disabled={isLoading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a size"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {sizes.map((size) => (
-                        <SelectItem value={size.id} key={size.id}>
-                          {size.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="isFeatured"
               render={({ field }) => (
-                <FormItem className="flex items-start flex-row space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
                     <Checkbox onCheckedChange={field.onChange} />
                   </FormControl>
@@ -282,7 +249,7 @@ const ProductForm = ({
               control={form.control}
               name="isArchived"
               render={({ field }) => (
-                <FormItem className="flex items-start flex-row space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
                     <Checkbox onCheckedChange={field.onChange} />
                   </FormControl>
@@ -292,6 +259,55 @@ const ProductForm = ({
                       This product will never appear in the homepage
                     </FormDescription>
                   </div>
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid gap-8 md:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter Description"
+                      {...field}
+                      rows={5}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="details"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Details</FormLabel>
+                  <FormControl>
+                    <Multitext
+                      placeholder="Enter Details"
+                      value={field.value}
+                      disabled={isLoading}
+                      onChange={(item) =>
+                        field.onChange([...field.value, item])
+                      }
+                      onRemove={(itemToRemove) => {
+                        field.onChange([
+                          [
+                            ...field.value.filter(
+                              (item) => item !== itemToRemove,
+                            ),
+                          ],
+                        ]);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />

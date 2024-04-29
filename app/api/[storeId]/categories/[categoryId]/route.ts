@@ -9,18 +9,15 @@ export async function PATCH(
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { name, collectionId } = body;
+    const { name } = body;
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
     }
-    if (!collectionId) {
-      return new NextResponse("Collection ID is required", { status: 400 });
-    }
     if (!params.categoryId) {
-      return new NextResponse("category ID is required", { status: 400 });
+      return new NextResponse("Category ID is required", { status: 400 });
     }
     if (!params.storeId) {
       return new NextResponse("Store ID is required", { status: 400 });
@@ -41,7 +38,6 @@ export async function PATCH(
       },
       data: {
         name,
-        collectionId,
       },
     });
     return NextResponse.json(category);
@@ -84,7 +80,7 @@ export async function DELETE(
 
     return NextResponse.json(res);
   } catch (error) {
-    //console.log('BILLBORD_DELETE :', error);
+    //console.log('COLLECTION_DELETE :', error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
@@ -101,13 +97,10 @@ export async function GET(
       where: {
         id: params.categoryId,
       },
-      include: {
-        collection: true,
-      },
     });
     return NextResponse.json(category);
   } catch (error) {
-    //console.log('[BILLBORD_GET] :', error);
+    //console.log('[COLLECTION_GET] :', error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

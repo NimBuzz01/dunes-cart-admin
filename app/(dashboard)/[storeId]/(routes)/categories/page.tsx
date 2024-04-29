@@ -8,9 +8,6 @@ const CategoriesPage = async ({ params }: { params: { storeId: string } }) => {
     where: {
       storeId: params.storeId,
     },
-    include: {
-      collection: true,
-    },
     orderBy: {
       createdAt: "desc",
     },
@@ -19,7 +16,6 @@ const CategoriesPage = async ({ params }: { params: { storeId: string } }) => {
   const formattedCategories: CategoryColumn[] = categories.map((category) => ({
     id: category.id,
     name: category.name,
-    collectionLabel: category.collection.label,
     createdAt: format(category.createdAt, "MMMM do, yyyy"),
   }));
   return (

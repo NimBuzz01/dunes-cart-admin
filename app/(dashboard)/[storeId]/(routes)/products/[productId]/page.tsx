@@ -22,20 +22,11 @@ const ProductPage = async ({
       storeId: params.storeId,
     },
   });
-  const sizes = await prismadb.size.findMany({
-    where: {
-      storeId: params.storeId,
-    },
-  });
 
   return (
     <div className="flex-col">
-      <div className="space-y-4 flex-1 p-8">
-        <ProductForm
-          initialData={product}
-          categories={categories}
-          sizes={sizes}
-        />
+      <div className="flex-1 space-y-4 p-8">
+        <ProductForm initialData={product} categories={categories} />
       </div>
     </div>
   );

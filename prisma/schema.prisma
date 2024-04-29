@@ -19,64 +19,48 @@ model Store {
   updatedAt DateTime @updatedAt
 
   orders      Order[]
-  sizes       Size[]
   collections Collection[]
   categories  Category[]
   products    Product[]
 }
 
 model Collection {
-  id         String     @id @default(uuid()) @map("_id")
-  storeId    String
-  label      String
-  imageUrl   String
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  categories Category[]
-  store      Store      @relation(fields: [storeId], references: [id])
+  id       String @id @unique @default(uuid()) @map("_id")
+  storeId  String
+  label    String
+  imageUrl String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  store     Store    @relation(fields: [storeId], references: [id])
 }
 
 model Category {
-  id           String   @id @default(uuid()) @map("_id")
-  storeId      String
-  name         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  collectionId String
-
-  products Product[]
-
-  collection Collection @relation(fields: [collectionId], references: [id])
-  store      Store      @relation(fields: [storeId], references: [id])
-}
-
-model Size {
-  id        String   @id @default(uuid()) @map("_id")
-  name      String
+  id        String   @id @unique @default(uuid()) @map("_id")
   storeId   String
+  name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  value     String
 
   products Product[]
   store    Store     @relation(fields: [storeId], references: [id])
 }
 
 model Product {
-  id         String   @id @default(uuid()) @map("_id")
-  storeId    String
-  categoryId String
-  name       String
-  price      Float
-  isFeatured Boolean  @default(false)
-  isArchived Boolean  @default(false)
-  sizeId     String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          String   @id @default(uuid()) @map("_id")
+  storeId     String
+  categoryId  String
+  name        String
+  price       Float
+  description String
+  details     String[]
+  isFeatured  Boolean  @default(false)
+  isArchived  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   orderItems OrderItem[]
   images     Image[]
-  size       Size        @relation(fields: [sizeId], references: [id])
   store      Store       @relation(fields: [storeId], references: [id])
   category   Category    @relation(fields: [categoryId], references: [id])
 }
@@ -91,11 +75,17 @@ model Image {
 }
 
 model Order {
-  id         String      @id @default(uuid()) @map("_id")
+  id         String      @id @unique
   storeId    String
   isPaid     Boolean     @default(false)
+  firstName  String      @default("")
+  lastName   String      @default("")
+  email      String      @default("")
   phone      String      @default("")
   address    String      @default("")
+  city       String      @default("")
+  country    String      @default("")
+  postalCode String      @default("")
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   orderItems OrderItem[]
@@ -106,6 +96,7 @@ model OrderItem {
   id        String @id @default(uuid()) @map("_id")
   orderId   String
   productId String
+  quantity  Int
 
   product Product @relation(fields: [productId], references: [id])
   order   Order   @relation(fields: [orderId], references: [id])

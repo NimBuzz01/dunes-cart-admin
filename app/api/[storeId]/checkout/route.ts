@@ -15,7 +15,7 @@ export async function OPTIONS() {
 }
 export async function POST(
   req: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   const { productIds } = await req.json();
 
@@ -39,7 +39,7 @@ export async function POST(
     line_items.push({
       quantity: 1,
       price_data: {
-        currency: "USD",
+        currency: "LKR",
         product_data: {
           name: item.name,
           images: item.images.map((image) => image.url),
@@ -53,8 +53,12 @@ export async function POST(
     });
   });
 
+  const orderid = require("order-id")("key");
+  const id = orderid.generate();
+
   const order = await prismadb.order.create({
     data: {
+      id: id,
       storeId: params.storeId,
       isPaid: false,
       orderItems: {

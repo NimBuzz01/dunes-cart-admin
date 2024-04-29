@@ -19,7 +19,6 @@ import AlertModal from "../modals/alertModal";
 export type CategoryColumn = {
   id: string;
   name: string;
-  collectionLabel: string;
   createdAt: string;
 };
 
@@ -27,11 +26,6 @@ export const Columns: ColumnDef<CategoryColumn>[] = [
   {
     accessorKey: "name",
     header: "Name",
-  },
-  {
-    accessorKey: "collection",
-    header: "Collection",
-    cell: ({ row }) => row.original.collectionLabel,
   },
   {
     accessorKey: "createdAt",
