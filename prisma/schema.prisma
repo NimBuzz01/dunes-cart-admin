@@ -25,10 +25,12 @@ model Store {
 }
 
 model Collection {
-  id       String @id @unique @default(uuid()) @map("_id")
-  storeId  String
-  label    String
-  imageUrl String
+  id          String @id @unique @default(uuid()) @map("_id")
+  storeId     String
+  title       String
+  description String
+  imageUrl    String
+  productUrl  String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -39,6 +41,7 @@ model Category {
   id        String   @id @unique @default(uuid()) @map("_id")
   storeId   String
   name      String
+  imageUrl  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

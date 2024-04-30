@@ -16,7 +16,8 @@ const CollectionsPage = async ({ params }: { params: { storeId: string } }) => {
   const formattedCollections: CollectionColumn[] = collections.map(
     (collection) => ({
       id: collection.id,
-      label: collection.label,
+      title: collection.title,
+      description: collection.description,
       createdAt: format(collection.createdAt, "MMMM do, yyyy"),
     }),
   );

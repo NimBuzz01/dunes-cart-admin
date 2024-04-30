@@ -23,12 +23,14 @@ import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import AlertModal from "./modals/alertModal";
 import { Category } from "@prisma/client";
+import ImageUpload from "./ui/ImageUpload";
 
 interface CategoryFormProps {
   initialData: Category | null;
 }
 const formSchema = z.object({
   name: z.string().min(3),
+  imageUrl: z.string().min(1),
 });
 type CategoryFormValues = z.infer<typeof formSchema>;
 
@@ -46,6 +48,7 @@ const CategoryForm = ({ initialData }: CategoryFormProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       name: "",
+      imageUrl: "",
     },
   });
 
@@ -112,6 +115,24 @@ const CategoryForm = ({ initialData }: CategoryFormProps) => {
           className="w-full space-y-8"
           onSubmit={form.handleSubmit(onSubmit)}
         >
+          <FormField
+            control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category Image (Icon)</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    values={field.value ? [field.value] : []}
+                    disabled={isLoading}
+                    onChange={(url) => field.onChange(url)}
+                    onRemove={() => field.onChange("")}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="grid gap-8 sm:grid-cols-2">
             <FormField
               control={form.control}

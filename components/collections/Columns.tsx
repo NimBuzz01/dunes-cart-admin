@@ -18,14 +18,19 @@ import AlertModal from "../modals/alertModal";
 
 export type CollectionColumn = {
   id: string;
-  label: string;
+  title: string;
+  description: string;
   createdAt: string;
 };
 
 export const Columns: ColumnDef<CollectionColumn>[] = [
   {
-    accessorKey: "label",
-    header: "Label",
+    accessorKey: "title",
+    header: "Title",
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
   },
   {
     accessorKey: "createdAt",

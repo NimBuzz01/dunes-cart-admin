@@ -9,12 +9,16 @@ export async function POST(
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { label, imageUrl } = body;
+    const { title, description, imageUrl, productUrl } = body;
 
     if (!userId) return new NextResponse("Unauthenticated", { status: 401 });
-    if (!label) return new NextResponse("Label is required", { status: 400 });
+    if (!title) return new NextResponse("Label is required", { status: 400 });
+    if (!description)
+      return new NextResponse("Description is required", { status: 400 });
     if (!imageUrl)
       return new NextResponse("Image URL is required", { status: 400 });
+    if (!productUrl)
+      return new NextResponse("Product URL is required", { status: 400 });
     if (!params.storeId)
       return new NextResponse("Store ID is required", { status: 400 });
 
@@ -29,8 +33,10 @@ export async function POST(
 
     const collection = await prismadb.collection.create({
       data: {
-        label,
+        title,
+        description,
         imageUrl,
+        productUrl,
         storeId: params.storeId,
       },
     });

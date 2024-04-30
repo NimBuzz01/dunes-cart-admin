@@ -23,13 +23,16 @@ import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import AlertModal from "./modals/alertModal";
 import ImageUpload from "./ui/ImageUpload";
+import { Textarea } from "./ui/textarea";
 
 interface CollectionFormProps {
   initialData: Collection | null;
 }
 const formSchema = z.object({
   imageUrl: z.string().min(1),
-  label: z.string().min(3),
+  title: z.string().min(3),
+  description: z.string().min(1),
+  productUrl: z.string().min(1),
 });
 type CollectionFormValues = z.infer<typeof formSchema>;
 
@@ -48,7 +51,9 @@ const CollectionForm = ({ initialData }: CollectionFormProps) => {
   const form = useForm<CollectionFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      label: "",
+      title: "",
+      description: "",
+      productUrl: "",
       imageUrl: "",
     },
   });
@@ -137,14 +142,31 @@ const CollectionForm = ({ initialData }: CollectionFormProps) => {
           <div className="grid gap-8 sm:grid-cols-3">
             <FormField
               control={form.control}
-              name="label"
+              name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Label</FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isLoading}
-                      placeholder="Collection label"
+                      placeholder="Collection title"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="productUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Product URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      placeholder="Collection product URL"
                       {...field}
                     />
                   </FormControl>
@@ -153,6 +175,24 @@ const CollectionForm = ({ initialData }: CollectionFormProps) => {
               )}
             />
           </div>
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Enter Description"
+                    {...field}
+                    rows={5}
+                    disabled={isLoading}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Button disabled={isLoading} className="ml-auto" type="submit">
             {action}
           </Button>
