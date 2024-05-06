@@ -1,15 +1,19 @@
 import { ModalProvider } from "@/providers/modal-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Archivo } from "next/font/google";
 import ToastProvider from "@/providers/toast-provider";
 
 import "./globals.css";
 
-const poppins = Poppins({ weight: "500", style: "normal", subsets: ["latin"] });
+const archivo = Archivo({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "600", "700", "800", "900"],
+  fallback: ["sans-serif"],
+});
 
 export const metadata: Metadata = {
-  title: "Home - Admin Dashboard",
+  title: "Dunes Cart - Admin Dashboard",
   description: "A point to manage your stores, categories and products",
 };
 
@@ -21,7 +25,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={poppins.className}>
+        <body className={archivo.className}>
           <ToastProvider />
           <ModalProvider />
           {children}
