@@ -292,19 +292,16 @@ const ProductForm = ({ initialData, categories = [] }: ProductFormProps) => {
                     <Multitext
                       placeholder="Enter Details"
                       value={field.value}
-                      disabled={isLoading}
                       onChange={(item) =>
                         field.onChange([...field.value, item])
                       }
-                      onRemove={(itemToRemove) => {
+                      onRemove={(itemToRemove) =>
                         field.onChange([
-                          [
-                            ...field.value.filter(
-                              (item) => item !== itemToRemove,
-                            ),
-                          ],
-                        ]);
-                      }}
+                          ...field.value.filter(
+                            (item) => item !== itemToRemove,
+                          ),
+                        ])
+                      }
                     />
                   </FormControl>
                   <FormMessage />

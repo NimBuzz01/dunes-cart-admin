@@ -9,11 +9,24 @@ export async function PATCH(
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { name, price, images, isFeatured, isArchived, categoryId } = body;
+    const {
+      name,
+      price,
+      description,
+      details,
+      images,
+      isFeatured,
+      isArchived,
+      categoryId,
+    } = body;
 
     if (!userId) return new NextResponse("Unauthenticated", { status: 401 });
     if (!name) return new NextResponse("name is required", { status: 400 });
     if (!price) return new NextResponse("price is required", { status: 400 });
+    if (!description)
+      return new NextResponse("description is required", { status: 400 });
+    if (!details)
+      return new NextResponse("details is required", { status: 400 });
     if (!categoryId)
       return new NextResponse("category is required", { status: 400 });
     if (!params.storeId)
@@ -40,6 +53,8 @@ export async function PATCH(
       data: {
         name,
         price,
+        description,
+        details,
         isFeatured,
         isArchived,
         categoryId,
